@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -107,23 +110,19 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
                     /*
                     Save new vendor
                      */
-                    String[] cols = {"fname","lname","uname","email","hname","pwd"};
-                    String[] vals = {fname,lname,uname,email,hname,pwd};
-                    new DB(this).insertData(cols,vals,"vendor");
-
-                    /*
-                    Show success message
-                     */
-                    Toast.makeText(this,"Successfully Registered. Click Log-In to go ahead..",Toast.LENGTH_LONG).show();
+                    //String[] cols = {"fname","lname","uname","email","hname","pwd"};
+                    //String[] vals = {fname,lname,uname,email,hname,pwd};
+                    //new DB(this).insertData(cols,vals,"vendor");
 
                     /*
                     Change intent, Redirect user to login page with username and password
                      */
                     registerVendor(fname,lname,hname,uname,pwd,email);
-                    Intent login = new Intent(this, neonconcept.sanikapp.login.class);
-                    login.putExtra("username",uname);
-                    login.putExtra("pawd",pwd);
-                    startActivity(login);
+
+                   // Intent login = new Intent(this, neonconcept.sanikapp.login.class);
+                   // login.putExtra("username",uname);
+                   // login.putExtra("pawd",pwd);
+                   // startActivity(login);
 
                 }catch (Exception e){
                     Toast.makeText(this,"You got a critical error. Please contact your system administrator.",Toast.LENGTH_LONG).show();
@@ -142,24 +141,47 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
     }
 
     private void registerVendor(String fname, String lname, String hotel,String username, String password, String email) {
-        System.out.println("parsed email is = "+email);
-        String urlSuffix = "fname="+fname+"&lname="+lname+"&hotel="+hotel+"&username="+username+"&password="+password+"&email="+email;
+        final String urlSuffix = "fname="+fname+"&lname="+lname+"&hotel="+hotel+"&username="+username+"&password="+password+"&email="+email;
         class RegVendor extends AsyncTask<String, String[] , String>{
 
             @Override
             protected String doInBackground(String... strings) {
 
                 try {
-                    String valswithurl = strings[0];
+                    /*
+                    Create full url and replace spaces to %20 to stop invalidation
+                     */
+                    String valswithurl = strings[0]+"?"+urlSuffix;
+                    valswithurl = valswithurl.replaceAll(" ", "%20");
                     System.out.println("URL : "+valswithurl);
+
+                    /*
+                    Open URL Connection
+                     */
                     URL url = new URL(valswithurl);
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     BufferedReader df = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    System.out.println("read line : "+df.readLine());
+
+                    /*
+                    Read retrieved response
+                     */
+                    String returned = df.readLine();
+                    System.out.println("read line : "+returned);
+
+                    /*
+                    Parse response text to json
+                     */
+                    JSONObject jobject = new JSONObject(returned);
+                    if(jobject.getBoolean("error")){
+                        System.out.println("Have an error : "+jobject.getString("Message"));
+                    }else{
+                        return jobject.getString("username")+","+jobject.getString("password")+","+jobject.getString("Message");
+                    }
+                return jobject.getString("Message");
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-                return null;
+                return "Uh-Oh We got an error while processing this!";
             }
 
             @Override
@@ -171,10 +193,34 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Toast.makeText(getApplicationContext(),"Post excecute",Toast.LENGTH_LONG).show();
+                System.out.println("on post : "+s);
+                if(s.contains(",")){
+                    // No error
+                    String[] splitted = s.split(",");
+                    String username = splitted[0];
+                    String password = splitted[1];
+                    String message = splitted[2];
+
+                    Intent login = new Intent(getApplicationContext(), neonconcept.sanikapp.login.class);
+                    login.putExtra("username",username);
+                    login.putExtra("pawd",password);
+                    startActivity(login);
+                }else{
+                    AlertDialog.Builder alert = new AlertDialog.Builder(null);
+                    alert.setTitle("You got an error!");
+                    alert.setMessage(s);
+                    alert.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    alert.show();
+                }
+
             }
         }
         RegVendor regven = new RegVendor();
-        regven.execute(REGISTER_URL+"?"+urlSuffix);
+        regven.execute(REGISTER_URL);
     }
 }
