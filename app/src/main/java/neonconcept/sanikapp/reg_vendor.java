@@ -17,7 +17,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 public class reg_vendor extends AppCompatActivity implements View.OnClickListener{
 
@@ -108,22 +107,9 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
             }else{
                 try {
                     /*
-                    Save new vendor
-                     */
-                    //String[] cols = {"fname","lname","uname","email","hname","pwd"};
-                    //String[] vals = {fname,lname,uname,email,hname,pwd};
-                    //new DB(this).insertData(cols,vals,"vendor");
-
-                    /*
-                    Change intent, Redirect user to login page with username and password
+                    Save new vendor on remote DB
                      */
                     registerVendor(fname,lname,hname,uname,pwd,email);
-
-                   // Intent login = new Intent(this, neonconcept.sanikapp.login.class);
-                   // login.putExtra("username",uname);
-                   // login.putExtra("pawd",pwd);
-                   // startActivity(login);
-
                 }catch (Exception e){
                     Toast.makeText(this,"You got a critical error. Please contact your system administrator.",Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -183,15 +169,8 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
             }
 
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                //Toast.makeText(getApplicationContext(),"before excecute",Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                System.out.println("on post : "+s);
                 if(s.contains(",")){
                     // No error
                     String[] splitted = s.split(",");
@@ -205,16 +184,10 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
                     startActivity(login);
                 }else{
                     System.out.println("login error");
-//                    AlertDialog.Builder alert = new AlertDialog.Builder(null);
-//                    alert.setTitle("You got an error!");
-//                    alert.setMessage(s);
-//                    alert.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//
-//                        }
-//                    });
-//                    alert.show();
+                    AlertDialog.Builder alert = new AlertDialog.Builder(null);
+                    alert.setTitle("You got an error!");
+                    alert.setMessage(s);
+                    alert.show();
                 }
 
             }

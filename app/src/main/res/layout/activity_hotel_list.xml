@@ -13,8 +13,26 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:id="@+id/tv_username"
+        android:textSize="20dp"
+        android:textColor="#000"
+        android:layout_marginBottom="8dp"
         />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADD HOTEL"
+        android:textAlignment="center"
+        android:background="#004D40"
+        android:textColor="#FFF"
+        android:layout_marginBottom="10dp"
+        />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/hotelList"
+        android:layout_gravity="center_horizontal" />
 
 
 </LinearLayout>
