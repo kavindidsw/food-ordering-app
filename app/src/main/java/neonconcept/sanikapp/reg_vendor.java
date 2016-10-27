@@ -153,7 +153,6 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
                      */
                     String valswithurl = strings[0]+"?"+urlSuffix;
                     valswithurl = valswithurl.replaceAll(" ", "%20");
-                    System.out.println("URL : "+valswithurl);
 
                     /*
                     Open URL Connection
