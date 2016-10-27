@@ -22,7 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-public class hotel_list extends AppCompatActivity implements AdapterView.OnItemLongClickListener{
+public class hotel_list extends AppCompatActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener{
 
     String FETCH_HOTELS = "http://192.168.0.101/minion/gethotels.php"; // Get hotels PHP
     TextView userTV;
@@ -51,6 +51,7 @@ public class hotel_list extends AppCompatActivity implements AdapterView.OnItemL
         fetchHotels(vendor_id);
 
         list.setOnItemLongClickListener(this);
+        list.setOnItemClickListener(this);
     }
 
     private void fetchHotels(final String vendor_id) {
@@ -118,12 +119,24 @@ public class hotel_list extends AppCompatActivity implements AdapterView.OnItemL
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        return false;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        /*
+        Create alert dialog to show hotel details
+         */
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         ListOption lop = (ListOption) adapterView.getItemAtPosition(i);
         alert.setTitle(lop.getHotel_name());
 
         Context context = this.getBaseContext();
 
+        /*
+        Create layout and views
+         */
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(50,0,0,50);
@@ -149,6 +162,9 @@ public class hotel_list extends AppCompatActivity implements AdapterView.OnItemL
         final TextView ophrs = new TextView(this);
         ophrs.setText("Open Hours : "+lop.getOpen_hrs());
 
+        /*
+        Add views to layout
+         */
         layout.addView(reg_no);
         layout.addView(addr);
         layout.addView(pcode);
@@ -159,6 +175,5 @@ public class hotel_list extends AppCompatActivity implements AdapterView.OnItemL
 
         alert.setView(layout);
         alert.show();
-        return false;
     }
 }
