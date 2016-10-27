@@ -22,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ADD HOTEL"
+        android:id="@+id/btnAddHotel"
         android:textAlignment="center"
         android:background="#004D40"
         android:textColor="#FFF"

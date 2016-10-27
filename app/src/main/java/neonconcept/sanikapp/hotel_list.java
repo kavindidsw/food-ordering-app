@@ -1,6 +1,7 @@
 package neonconcept.sanikapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,12 +24,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-public class hotel_list extends AppCompatActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener{
+public class hotel_list extends AppCompatActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener, View.OnClickListener{
 
     String FETCH_HOTELS = "http://192.168.0.101/minion/gethotels.php"; // Get hotels PHP
     TextView userTV;
     ArrayAdapter<ListOption> list_data;
     ListView list;
+    Button newhotel;
+    String vendor_id,vendor_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,19 +43,21 @@ public class hotel_list extends AppCompatActivity implements AdapterView.OnItemL
          */
         userTV = (TextView) findViewById(R.id.tv_username);
 
-        String vendor_name = getIntent().getStringExtra("username"); // Get user name from intent that set from login form
+        vendor_name = getIntent().getStringExtra("username"); // Get user name from intent that set from login form
         userTV.setText(vendor_name);
 
         list = (ListView) findViewById(R.id.hotelList);
         list_data = new ArrayAdapter<ListOption>(this, android.R.layout.simple_list_item_1);
+        newhotel = (Button) findViewById(R.id.btnAddHotel);
 
-        String vendor_id = getIntent().getStringExtra("vendor_id");
+        vendor_id = getIntent().getStringExtra("vendor_id");
 
         // fetch registered hotels
         fetchHotels(vendor_id);
 
         list.setOnItemLongClickListener(this);
         list.setOnItemClickListener(this);
+        newhotel.setOnClickListener(this);
     }
 
     private void fetchHotels(final String vendor_id) {
@@ -65,6 +71,7 @@ public class hotel_list extends AppCompatActivity implements AdapterView.OnItemL
                     Request process
                      */
                     String full_url = FETCH_HOTELS+params;
+                    System.out.println(full_url);
                     URL url = new URL(full_url);
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     BufferedReader df = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -86,7 +93,7 @@ public class hotel_list extends AppCompatActivity implements AdapterView.OnItemL
                         String phone = hotels.getJSONObject(i).getString("PhoneNumber");
                         String pland = hotels.getJSONObject(i).getString("LandLine");
                         String desc = hotels.getJSONObject(i).getString("Description");
-                        String openhrs = hotels.getJSONObject(i).getString("Opening Hours");
+                        String openhrs = hotels.getJSONObject(i).getString("OpeningHours");
                         String pcode = hotels.getJSONObject(i).getString("Postalcode");
 
                         list_data.add(new ListOption(hotel_id,vendor,hname,reg_no,addr,email,phone,pland,desc,openhrs,pcode));
@@ -175,5 +182,15 @@ public class hotel_list extends AppCompatActivity implements AdapterView.OnItemL
 
         alert.setView(layout);
         alert.show();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(newhotel == view){
+            Intent intent = new Intent(getApplicationContext(),Add_hotel.class);
+            intent.putExtra("vendor_id",vendor_id);
+            intent.putExtra("vname",vendor_name);
+            startActivity(intent);
+        }
     }
 }
