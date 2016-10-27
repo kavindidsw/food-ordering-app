@@ -23,15 +23,12 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
     Button login;
     EditText uname_te, pwd_te;
-    DB db;
     private final String LOGIN_URL = "http://192.168.0.101/minion/loginuser.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        db = new DB(this);
 
         uname_te = (EditText) findViewById(R.id.etUsername);
         pwd_te = (EditText) findViewById(R.id.etPassword);

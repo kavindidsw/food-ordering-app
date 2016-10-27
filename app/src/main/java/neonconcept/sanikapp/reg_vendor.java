@@ -1,7 +1,10 @@
 package neonconcept.sanikapp;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +32,14 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reg_vendor);
 
+        if(!isConnected()){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("You are not connected");
+            alert.setMessage("Please connect to reliable internet connection to work with this App.");
+            alert.show();
+            //finish();
+        }
+
         saveNLogin = (Button) findViewById(R.id.saveNLogin); // Initialize button
         toLogin = (Button) findViewById(R.id.dirLogin);
 
@@ -42,12 +53,6 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
         hnamex = (EditText) findViewById(R.id.vlog_hname);
         pwdx = (EditText) findViewById(R.id.vlog_password);
         conpwdx = (EditText) findViewById(R.id.vlog_conf_password);
-
-        try {
-            new DB(this);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
         saveNLogin.setOnClickListener(this); // Set click listener to button (Listener is implemented).
         toLogin.setOnClickListener(this); // Set click listener to Direct login button
@@ -194,5 +199,13 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
         }
         RegVendor regven = new RegVendor();
         regven.execute(REGISTER_URL);
+    }
+    public boolean isConnected(){
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            return true;
+        else
+            return false;
     }
 }
