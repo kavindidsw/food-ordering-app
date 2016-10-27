@@ -165,7 +165,6 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
                     Read retrieved response
                      */
                     String returned = df.readLine();
-                    System.out.println("read line : "+returned);
 
                     /*
                     Parse response text to json
@@ -205,16 +204,17 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
                     login.putExtra("pawd",password);
                     startActivity(login);
                 }else{
-                    AlertDialog.Builder alert = new AlertDialog.Builder(null);
-                    alert.setTitle("You got an error!");
-                    alert.setMessage(s);
-                    alert.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                        }
-                    });
-                    alert.show();
+                    System.out.println("login error");
+//                    AlertDialog.Builder alert = new AlertDialog.Builder(null);
+//                    alert.setTitle("You got an error!");
+//                    alert.setMessage(s);
+//                    alert.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                        }
+//                    });
+//                    alert.show();
                 }
 
             }

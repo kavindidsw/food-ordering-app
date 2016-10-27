@@ -98,8 +98,6 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                 if(s.contains(",")) {
                     String message = s.split(",")[1];
                     showError(message);
-                }else{
-                    showHotels();
                 }
             }
         }
@@ -108,8 +106,9 @@ public class login extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void showHotels() {
-        Intent int_f = new Intent(this,reg_vendor.class);
+        Intent int_f = new Intent(getApplicationContext(),hotel_list.class);
         startActivity(int_f);
+        finish();
     }
 
     private void showError(String message) {
@@ -117,5 +116,6 @@ public class login extends AppCompatActivity implements View.OnClickListener {
         alert.setTitle("AWW-SANP!");
         alert.setMessage(message);
         alert.show();
+
     }
 }
