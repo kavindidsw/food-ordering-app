@@ -162,7 +162,6 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
                      */
                     JSONObject jobject = new JSONObject(returned);
                     if(jobject.getBoolean("error")){
-                        System.out.println("Have an error : "+jobject.getString("Message"));
                     }else{
                         return jobject.getString("username")+","+jobject.getString("password")+","+jobject.getString("Message");
                     }
@@ -188,11 +187,7 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
                     login.putExtra("pawd",password);
                     startActivity(login);
                 }else{
-                    System.out.println("login error");
-                    AlertDialog.Builder alert = new AlertDialog.Builder(null);
-                    alert.setTitle("You got an error!");
-                    alert.setMessage(s);
-                    alert.show();
+                    showError(s);
                 }
 
             }
@@ -200,6 +195,14 @@ public class reg_vendor extends AppCompatActivity implements View.OnClickListene
         RegVendor regven = new RegVendor();
         regven.execute(REGISTER_URL);
     }
+
+    private void showError(String message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("You got an error!");
+        alert.setMessage(message);
+        alert.show();
+    }
+
     public boolean isConnected(){
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
